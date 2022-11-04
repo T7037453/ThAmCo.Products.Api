@@ -5,7 +5,7 @@ namespace ThAmCo.Products.Api.Data
 {
     public class ProductsContext : DbContext
     {
-        public DbSet<Product> Products { get; set; } = null;
+        public DbSet<Product> Products { get; set; } = null!;
 
         public ProductsContext(DbContextOptions<ProductsContext> options)
             : base(options)
