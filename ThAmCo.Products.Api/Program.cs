@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ThAmCo.Products.Api.Models;
+using ThAmCo.Products.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,7 @@ builder.Services.AddDbContext<ProductsContext>(options =>
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        var dbPath = System.IO.Path.Join(path, "prducts.db");
+        var dbPath = System.IO.Path.Join(path, "products.db");
         options.UseSqlite($"Data Source={dbPath}");
         options.EnableDetailedErrors();
         options.EnableSensitiveDataLogging();
@@ -32,11 +32,11 @@ builder.Services.AddDbContext<ProductsContext>(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    //app.UseSwagger();
+//    //app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
@@ -55,9 +55,9 @@ app.MapGet("/products", async (ProductsContext ctx) =>
     return await ctx.Products.ToListAsync();
 });
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
-app.MapControllers();
+//app.MapControllers();
 
 app.Run();
 

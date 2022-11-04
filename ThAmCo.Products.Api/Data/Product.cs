@@ -1,4 +1,4 @@
-﻿namespace ThAmCo.Products.Api.Models
+﻿namespace ThAmCo.Products.Api.Data
 {
     public class Product
     {

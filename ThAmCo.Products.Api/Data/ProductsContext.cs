@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace ThAmCo.Products.Api.Models
+namespace ThAmCo.Products.Api.Data
 {
     public class ProductsContext : DbContext
     {
