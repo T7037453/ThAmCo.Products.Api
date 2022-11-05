@@ -80,8 +80,8 @@ namespace ThAmCo.Products.Api.Controllers
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetProduct", new { id = product.Id }, product);
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            //return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
         // DELETE: api/Products/5
