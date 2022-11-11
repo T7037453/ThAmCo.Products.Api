@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThAmCo.Products.Api.Data;
+using ThAmCo.Products.Api.Services;
 
 namespace ThAmCo.Products.Api.Controllers
 {
@@ -14,10 +15,16 @@ namespace ThAmCo.Products.Api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductsContext _context;
+        private IProductsRepository _productsRepository;
+        private ILogger _logger;
 
-        public ProductsController(ProductsContext context)
+        public ProductsController(ProductsContext context, 
+                                  ILogger logger,
+                                  IProductsRepository productsRepository)
         {
             _context = context;
+            _logger = logger;
+            _productsRepository = productsRepository;
         }
 
         // GET: api/Products

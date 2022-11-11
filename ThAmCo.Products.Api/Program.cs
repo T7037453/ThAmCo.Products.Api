@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Transactions;
 using ThAmCo.Products.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,16 +45,24 @@ var responseMessage = app.Configuration["Message"] ?? "";
 
 app.MapPost("/products", async (ProductsContext ctx, ProductDto dto) =>
 {
-    var product = new Product { Id = dto.Id, Name = dto.Name };
+    var product = new Product { Id = dto.Id, Name = dto.Name, Brand = dto.Brand, Description = dto.Description, Price = dto.Price, StockLevel = dto.StockLevel };
     await ctx.AddAsync(product);
     await ctx.SaveChangesAsync();
     return responseMessage;
 });
 
+
 app.MapGet("/products", async (ProductsContext ctx) =>
 {
     return await ctx.Products.ToListAsync();
 });
+
+app.MapGet("/products/details", async (ProductsContext ctx) =>
+{
+    return await ctx.Products.ToListAsync();
+});
+
+
 
 //app.UseAuthorization();
 
@@ -61,4 +70,4 @@ app.MapGet("/products", async (ProductsContext ctx) =>
 
 app.Run();
 
-record ProductDto (int Id, string Name);
+record ProductDto (int Id, string Name, string Brand, string Description, double Price, int StockLevel);
