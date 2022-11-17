@@ -57,10 +57,12 @@ app.MapGet("/products", async (ProductsContext ctx) =>
     return await ctx.Products.ToListAsync();
 });
 
-app.MapGet("/products/details", async (ProductsContext ctx, int id) =>
+app.MapGet("/products/{id}", async (ProductsContext ctx, int id) =>
 {
     return await ctx.Products.FindAsync(id);
 });
+
+
 
 
 
