@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 using ThAmCo.Products.Api.Data;
@@ -25,12 +27,25 @@ builder.Services.AddDbContext<ProductsContext>(options =>
     }
 });
 
+builder.Services
+     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["Auth:Authority"];
+        options.Audience = builder.Configuration["Auth:Audience"];
+    });
+builder.Services.AddAuthorization();
+
+
 //builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -57,7 +72,7 @@ app.MapGet("/products", async (ProductsContext ctx) =>
     return await ctx.Products.ToListAsync();
 });
 
-app.MapGet("/products/{id}", async (ProductsContext ctx, int id) =>
+app.MapGet("/products/{id}", [Authorize] async (ProductsContext ctx, int id) =>
 {
     return await ctx.Products.FindAsync(id);
 });
