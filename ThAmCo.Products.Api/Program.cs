@@ -75,7 +75,7 @@ app.MapGet("/products", async (ProductsContext ctx) =>
 app.MapGet("/products/{id}", [Authorize] async (ProductsContext ctx, int id) =>
 {
     return await ctx.Products.FindAsync(id);
-});
+});;
 
 
 
