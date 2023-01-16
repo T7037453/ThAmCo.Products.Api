@@ -6,5 +6,6 @@ namespace ThAmCo.Products.Api.Services
         Task<IEnumerable<ProductDto>> GetProductsAsync(string name);
 
         Task<ProductDto> GetProductAsync(int id);
+
     }
 }

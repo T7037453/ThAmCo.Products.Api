@@ -1,8 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Newtonsoft.Json;
+using System.Configuration;
+using System.Text.Json;
 using System.Transactions;
 using ThAmCo.Products.Api.Data;
+using ThAmCo.Products.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,10 +38,23 @@ builder.Services
      .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["Auth:Authority"];
-        options.Audience = builder.Configuration["Auth:Audience"];
+    options.Authority = builder.Configuration["Auth:Authority"];
+    options.Audience = builder.Configuration["Auth:Audience"];
     });
-builder.Services.AddAuthorization();
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ReadAccess", policy =>
+                      policy.RequireAssertion(context =>
+                      context.User.HasClaim(claim =>
+                      (claim.Type == "permissions" &&
+                      (claim.Value == "read:details") &&
+                      claim.Issuer == $"https://{builder.Configuration["Auth:Domain"]}/"
+                      )
+                      )
+                      ));
+});
 
 
 //builder.Services.AddControllers();
@@ -72,11 +92,33 @@ app.MapGet("/products", async (ProductsContext ctx) =>
     return await ctx.Products.ToListAsync();
 });
 
-app.MapGet("/products/{id}", [Authorize] async (ProductsContext ctx, int id) =>
+app.MapGet("/products/{id}", [Authorize(Policy ="ReadAccess")] async (ProductsContext ctx, int id) =>
 {
     return await ctx.Products.FindAsync(id);
 });;
 
+app.MapDelete("/products/{id}", [Authorize(Policy = "ReadAccess")] async (ProductsContext ctx, int id) =>
+{
+    var product = await ctx.Products.FindAsync(id);
+    ctx.Products.Remove(product);
+    ctx.SaveChanges();
+    return responseMessage;
+});
+
+app.MapPut("/products/{id}", [Authorize(Policy = "ReadAccess")] async (ProductsContext ctx, Product product, int id) =>
+{
+    var productToUpdate = await ctx.Products.FindAsync(id);
+    productToUpdate.Name = product.Name;
+    productToUpdate.Brand = product.Brand;
+    productToUpdate.Description = product.Description;
+    productToUpdate.Price = product.Price;
+    productToUpdate.StockLevel = product.StockLevel;
+
+    await ctx.SaveChangesAsync();
+
+    return Results.Ok(productToUpdate);
+
+});
 
 
 
