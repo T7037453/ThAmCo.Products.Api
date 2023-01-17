@@ -38,7 +38,7 @@ namespace ThAmCo.Products.Api.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        [Authorize (Policy ="ReadAccess")]
+        [Authorize]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);

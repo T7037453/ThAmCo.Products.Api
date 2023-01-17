@@ -92,12 +92,12 @@ app.MapGet("/products", async (ProductsContext ctx) =>
     return await ctx.Products.ToListAsync();
 });
 
-app.MapGet("/products/{id}", [Authorize(Policy ="ReadAccess")] async (ProductsContext ctx, int id) =>
+app.MapGet("/products/{id}", [Authorize] async (ProductsContext ctx, int id) =>
 {
     return await ctx.Products.FindAsync(id);
 });;
 
-app.MapDelete("/products/{id}", [Authorize(Policy = "ReadAccess")] async (ProductsContext ctx, int id) =>
+app.MapDelete("/products/{id}", [Authorize] async (ProductsContext ctx, int id) =>
 {
     var product = await ctx.Products.FindAsync(id);
     ctx.Products.Remove(product);
@@ -105,7 +105,7 @@ app.MapDelete("/products/{id}", [Authorize(Policy = "ReadAccess")] async (Produc
     return responseMessage;
 });
 
-app.MapPut("/products/{id}", [Authorize(Policy = "ReadAccess")] async (ProductsContext ctx, Product product, int id) =>
+app.MapPut("/products/{id}", [Authorize] async (ProductsContext ctx, Product product, int id) =>
 {
     var productToUpdate = await ctx.Products.FindAsync(id);
     productToUpdate.Name = product.Name;
